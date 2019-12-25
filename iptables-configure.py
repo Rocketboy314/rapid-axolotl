@@ -112,7 +112,7 @@ while(choice.lower() != 'y' and choice.lower != 'n'):
 if choice.lower() == 'y':
     script.write("\n# ALLOW DNS RESOLUTION\n")
 
-    choice2 = input("\t[*] Are you going to specify a DNS serve IP Address? Y/N")
+    choice2 = input("\t[*] Are you going to specify a DNS serve IP Address? Y/N: ")
     while(choice2.lower() != 'y' and choice2.lower() != 'n'):
         choice2 = input("\t[*] Are you going to specify a DNS serve IP Address? (recommended, if possible) Y/N: ")
 
@@ -127,6 +127,51 @@ if choice.lower() == 'y':
         script.write(f'iptables -A INPUT  -p udp --sport 53 -m state --state ESTABLISHED     -j ACCEPT\n')
         script.write(f'iptables -A OUTPUT -p tcp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT\n')
         script.write(f'iptables -A INPUT  -p tcp --sport 53 -m state --state ESTABLISHED     -j ACCEPT\n')
+
+####################################################
+# NON-USER-CONFIGURABLE RULES THAT ARE REQUIRED
+####################################################
+
+# ALLOW ALL TRAFFIC ON lo INTERFACE
+script.write("iptables -A INPUT -i lo -j ACCEPT\n")
+script.write("iptables -A OUTPUT -o lo -j ACCEPT\n")
+
+# ALLOW ALL ESTABLISHED AND RELATED CONNECTIONS
+script.write("iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT\n")
+script.write("iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT\n")
+
+########################################################
+# CONFIGURE PORTSPOOF
+########################################################
+portspoof = input("\n[*] Install and auto-configure PortSpoof utility? Y/N: ")
+
+# IF USER DESIRES, INSTALL AND CONFIGURE PORTSPOOF. THIS WILL REQUIRE BUFFERING ALL OUTPUT, TRACKING ALL PORTS MODDED,
+# AND THEN APPENDING PORTSPOOF LINES AND THEN NORMAL PORT LINES
+
+
+#########################################################
+# INSTALL FAIL2BAN
+#########################################################
+fail2ban = input("\n[*] Install and configure fail2ban? Y/N: ")
+
+# IF USER DESIRES, INSTALL FAIL2BAN
+
+##########################################################
+# ROLE-BASED CONFIGURATION
+##########################################################
+print("RAPID AXOLOTL has a role-based configuration mode. In this mode, you can specify one or multiple server roles,")
+print("for which pre-set IPTables rules will be used. This mode is optional, and should you use it, you can still opt")
+print("to specify additional, custom rules.")
+roleBased = input("\n[*] Enter role-based configuration mode? Y/N: ")
+
+##########################################################
+# CUSTOM CONFIGURATION
+##########################################################
+print("RAPID AXOLOTL also allows you to specify custom rules in addition to role-based configuration. In this mode,")
+print("you will be prompted to specify a port, and then select configuration options. This mode is optional, and is ")
+print("entirely compatible with role-based configuration")
+customConfig = input("\n[*] Enter custom configuration mode? Y/N: ")
+
 #############################################################
 # ALL OPTIONS SHOULD GO BEFORE HERE WHERE THE FILE IS CLOSED
 #############################################################
