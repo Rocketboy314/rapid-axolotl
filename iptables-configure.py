@@ -35,7 +35,7 @@ if (os.name == 'nt'):
     sys.exit("\nThis tool does not support Windows hosts!")
 
 # GET PATH OF IPTABLES BINARY
-if (shutil.which('iptables') != str):
+if (shutil.which('iptables') == None):
     sys.exit("\nIPTables is not in the PATH.")
 
 # MAKE SURE THAT THE USER IS RUNNING THE SCRIPT AS ROOT SO THAT WE CAN ACTUALLY MODIFY IPTABLES RULES
@@ -44,7 +44,7 @@ if not os.geteuid() == 0:
 
 # CREATE THE FILE; WILL OVERWRITE IF IT ALREADY EXISTS
 script = open("rules.sh", "w+")
-script.write("#!bin/bash")
+script.write("#!bin/bash\n")
 
 # FLUSH IPTABLES RULES?
 choice = input("[*] Flush existing IPTables rules? (recommended) Y/N: ")
@@ -91,6 +91,30 @@ while(choice.lower() != 'y' and choice.lower() != 'n'):
 if (choice.lower() == 'y'):
     script.write("iptables -P FORWARD DROP\n")
 
+#######################################################
+# IMPORTANT MISCELLANEOUS STUFF
+#######################################################
+
+# IMCP ECHO
+choice = input("[*] Block all inbound ICMP traffic? (May prevent host discovery and/or break things) Y/N: ")
+while(choice.lower() != 'y' and choice.lower() != 'n'):
+    choice = input("[*] Block all ICMP traffic? (May prevent host discovery and/or break things) Y/N: ")
+
+if choice.lower() == 'y':
+    script.write("\n# ICMP ECHO\n")
+    script.write("iptables -A INPUT -p icmp -j DROP\n")
+
+# ALLOW DNS RESOLUTION
+choice = input("[*] Allow DNS resolution? (STRONGLY recommended) Y/N: ")
+while(choice.lower() != 'y' and choice.lower != 'n'):
+    choice = input("[*] Allow DNS resolution? (STRONGLY recommended) Y/N: ")
+
+if choice.lower() == 'y':
+    script.write("\n# ALLOW DNS RESOLUTION\n")
+    script.write("iptables -A OUTPUT -p udp -d $ip --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT\n")
+    script.write("iptables -A INPUT  -p udp -s $ip --sport 53 -m state --state ESTABLISHED     -j ACCEPT\n")
+    script.write("iptables -A OUTPUT -p tcp -d $ip --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT\n")
+    script.write("iptables -A INPUT  -p tcp -s $ip --sport 53 -m state --state ESTABLISHED     -j ACCEPT\n")
 #############################################################
 # ALL OPTIONS SHOULD GO BEFORE HERE WHERE THE FILE IS CLOSED
 #############################################################
