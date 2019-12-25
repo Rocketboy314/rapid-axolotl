@@ -114,10 +114,10 @@ if choice.lower() == 'y':
 
     choice2 = input("\t[*] Are you going to specify a DNS serve IP Address? Y/N")
     while(choice2.lower() != 'y' and choice2.lower() != 'n'):
-        choice2 = input("\t[*] Are you going to specify a DNS serve IP Address? (recommended, if possible) Y/N")
+        choice2 = input("\t[*] Are you going to specify a DNS serve IP Address? (recommended, if possible) Y/N: ")
 
-    ip = input("\t[*] Enter DNS server IP Address: ")
     if choice2 == 'y':  # WITH A SPECIFIED IP ADDRESS
+        ip = input("\t[*] Enter DNS server IP Address: ")
         script.write(f'iptables -A OUTPUT -p udp -d {ip} --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT\n')
         script.write(f'iptables -A INPUT  -p udp -s {ip} --sport 53 -m state --state ESTABLISHED     -j ACCEPT\n')
         script.write(f'iptables -A OUTPUT -p tcp -d {ip} --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT\n')
