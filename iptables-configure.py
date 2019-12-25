@@ -133,10 +133,12 @@ if choice.lower() == 'y':
 ####################################################
 
 # ALLOW ALL TRAFFIC ON lo INTERFACE
+script.write("\n# ALLOW ALL TRAFFIC ON LOOPBACK\n")
 script.write("iptables -A INPUT -i lo -j ACCEPT\n")
 script.write("iptables -A OUTPUT -o lo -j ACCEPT\n")
 
 # ALLOW ALL ESTABLISHED AND RELATED CONNECTIONS
+script.write("\n# ALLOW ALL ESTABLISHED AND RELATED CONNECTIONS\n")
 script.write("iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT\n")
 script.write("iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT\n")
 
@@ -159,15 +161,22 @@ fail2ban = input("\n[*] Install and configure fail2ban? Y/N: ")
 ##########################################################
 # ROLE-BASED CONFIGURATION
 ##########################################################
-print("RAPID AXOLOTL has a role-based configuration mode. In this mode, you can specify one or multiple server roles,")
+print("\nRAPID AXOLOTL has a role-based configuration mode. In this mode, you can specify one or multiple server roles,")
 print("for which pre-set IPTables rules will be used. This mode is optional, and should you use it, you can still opt")
 print("to specify additional, custom rules.")
 roleBased = input("\n[*] Enter role-based configuration mode? Y/N: ")
 
+while(roleBased.lower() != 'y' and roleBased.lower() != 'n'):
+    roleBased = input("\n[*] Enter role-based configuration mode? Y/N: ")
+
+if(roleBased.lower() == 'y'):
+    print()
+    # ENTER ROLE-BASED CONFIGURATION
+
 ##########################################################
 # CUSTOM CONFIGURATION
 ##########################################################
-print("RAPID AXOLOTL also allows you to specify custom rules in addition to role-based configuration. In this mode,")
+print("\nRAPID AXOLOTL also allows you to specify custom rules in addition to role-based configuration. In this mode,")
 print("you will be prompted to specify a port, and then select configuration options. This mode is optional, and is ")
 print("entirely compatible with role-based configuration")
 customConfig = input("\n[*] Enter custom configuration mode? Y/N: ")
@@ -175,4 +184,12 @@ customConfig = input("\n[*] Enter custom configuration mode? Y/N: ")
 #############################################################
 # ALL OPTIONS SHOULD GO BEFORE HERE WHERE THE FILE IS CLOSED
 #############################################################
+
+# CLOSE THE SCRIPT
 script.close()
+
+# MAKE ROOT THE OWNER OF THE SCRIPT
+os.system("chown root:root rules.sh")
+
+# ENSURE ONLY ROOT CAN RUN THE SCRIPT
+os.system("chmod 770 rules.sh")
