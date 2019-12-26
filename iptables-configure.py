@@ -387,7 +387,7 @@ if customConfig.lower() == 'y':
         while (allowOutbound.lower() != 'y' and allowOutbound.lower() != 'n'):
             allowOutbound = input('\t[*] Allow new outbound traffic TO this port (on another host)? Y/N: ')
 
-        allowOutboundTo = allowOutbound == 'y'
+        allowOutbound = allowOutbound == 'y'
         shouldLimitOutbound = ""
         outboundLimit = ""
 
