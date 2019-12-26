@@ -1,5 +1,4 @@
 import time, os, sys, shutil
-import objects
 print("Blackl1ght presents...")
 time.sleep(1.5)
 print(
@@ -159,7 +158,8 @@ portspoof = input("\n[*] Install and auto-configure PortSpoof utility? Y/N: ")
 
 # IF USER DESIRES, INSTALL AND CONFIGURE PORTSPOOF. THIS WILL REQUIRE BUFFERING ALL OUTPUT, TRACKING ALL PORTS MODDED,
 # AND THEN APPENDING PORTSPOOF LINES AND THEN NORMAL PORT LINES
-
+RULES = []
+PORTS = []
 
 #########################################################
 # INSTALL FAIL2BAN
@@ -167,6 +167,7 @@ portspoof = input("\n[*] Install and auto-configure PortSpoof utility? Y/N: ")
 fail2ban = input("\n[*] Install and configure fail2ban? Y/N: ")
 
 # IF USER DESIRES, INSTALL FAIL2BAN
+
 
 ##########################################################
 # ROLE-BASED CONFIGURATION
@@ -183,7 +184,17 @@ if(roleBased.lower() == 'y'):
     configureAnotherRole = True
 
     while(configureAnotherRole):
-        break
+        print("""
+        [1] FTP
+        [2] SSH
+        [3] DNS
+        [4] Web (ports 80 & 443 only)
+        [5] DNS
+        [6] Mail
+        [7] DHCP
+        [8] MySQL
+        """)
+
 
 ##########################################################
 # CUSTOM CONFIGURATION
