@@ -249,7 +249,7 @@ if(roleBased.lower() == 'y'):
             if use8888.lower() == 'y':
                 RULES.append("iptables -A INPUT -p tcp --dport 8888 -j ACCEPT\n")
                 PORTS.append(8888)
-                
+
             print("\t[*] INFO: make sure to configure other ports for things like databases manually!")
 
         # MAIL
@@ -325,8 +325,7 @@ if(roleBased.lower() == 'y'):
             continue
         else:
             break
-    for rule in RULES:
-        script.write(rule)
+
 ##########################################################
 # CUSTOM CONFIGURATION
 ##########################################################
@@ -339,6 +338,14 @@ while(customConfig.lower() != 'y' and customConfig.lower() != 'n'):
     customConfig = input("\n[*] Enter custom configuration mode? Y/N: ")
 
 if customConfig.lower() == 'y':
+    print("\n[*] INFO: Allowing new inbound traffic to a port allows a remote host to establish a connection to that port")
+    print("          on this host. e.g. allowing new inbound traffic to port 80 when this host is running an HTTP server")
+    print("          would allow remote hosts to make web requests to the server.")
+    print("[*] INFO: Allowing new outbound traffic to a port allows this host to establish a connection to that port on")
+    print("          a remote host. e.g. allowing new outbound traffic to port 80 will allow this host to make web requests")
+    print("[*] INFO: Restricting traffic by source port is not currently supported as it is not considered to be very")
+    print("          useful: source ports are usually randomized and as such do not usually give us useful information")
+    print("\n[*] INFO: Please be sure to be conscious of these distinctions when configuring ports.\n")
     while(True):
 
         # GET PORT
@@ -370,16 +377,57 @@ if customConfig.lower() == 'y':
             while (shouldLimitInbound.lower() != 'y' and shouldLimitInbound.lower() != 'n'):
                 shouldLimitInbound = input("\t[*] Restrict inbound traffic to this port to a host/subnet? Y/N: ")
 
-            shouldLimitInbound = shouldLimitInbound == 'y'
+            shouldLimitInbound = shouldLimitInbound.lower() == 'y'
 
             if shouldLimitInbound:
                 inboundLimit = input("\t\t[*] Enter host IP address or subnet in CIDR notation to whitelist: ")
 
-        # CHECK IF OUTBOUND TRAFFIC TO PORT
-        allowOutboundTo = ""
+        # CHECK IF OUTBOUND TRAFFIC TO PORT SHOULD BE ALLOWED
+        allowOutbound = ""
         while (allowOutbound.lower() != 'y' and allowOutbound.lower() != 'n'):
-            allowOutbound = input('\t[*] Allow new outbound traffic TO this port (on another host?')
+            allowOutbound = input('\t[*] Allow new outbound traffic TO this port (on another host)? Y/N: ')
 
+        allowOutboundTo = allowOutbound == 'y'
+        shouldLimitOutbound = ""
+        outboundLimit = ""
+
+        # IF OUTBOUND TRAFFIC IS ALLOWED, CHECK IF IT SHOULD BE LIMITED TO A HOST OR SUBNET
+        if allowOutbound:
+            while (shouldLimitOutbound.lower() != 'y' and shouldLimitOutbound.lower() != 'n'):
+                shouldLimitOutbound = input("\t[*] Restrict outbound traffic to this port to a host/subnet? Y/N: ")
+
+            shouldLimitOutbound = shouldLimitOutbound.lower() == 'y'
+
+            if shouldLimitOutbound :
+                outboundLimit = input("\t\t[*] Enter host IP address or subnet in CIDR notation to whitelist: ")
+
+        # BASED ON THIS INFORMATION, GENERATE RULES AND UPDATE PORTS LIST
+
+        # UPDATE PORTS LIST
+        if allowInbound:
+            PORTS.append(port)
+
+        # GENERATE INBOUND RULES
+        if allowInbound and shouldLimitInbound:
+            RULES.append(f'iptables -A INPUT -p {protocol} --dport {port} -s {inboundLimit} -j ACCEPT\n')
+        elif allowInbound and not shouldLimitInbound:
+            RULES.append(f'iptables -A INPUT -p {protocol} --dport {port} -j ACCEPT\n')
+
+        # GENERATE OUTBOUND RULES
+        if allowOutbound and shouldLimitOutbound:
+            RULES.append(f'iptables -A OUTPUT -p {protocol} --dport {port} -d {outboundLimit} -j ACCEPT\n')
+        elif allowOutbound and not shouldLimitOutbound:
+            RULES.append(f'iptables -A OUTPUT -p {protocol} --dport {port} -j ACCEPT\n')
+
+        print("\t[*] Port configured!")
+        # CHECK TO SEE IF USER WANTS TO CONFIGURE ANOTHER PORT
+        addAnother = ""
+        while addAnother.lower() != 'y' and addAnother.lower() != 'n':
+            addAnother = input("[*] Configure another port? Y/N: ")
+        if (addAnother.lower() == 'y'):
+            continue
+        else:
+            break
 #############################################################
 # ALL OPTIONS SHOULD GO BEFORE HERE WHERE THE FILE IS CLOSED
 #############################################################
