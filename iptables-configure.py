@@ -192,19 +192,21 @@ if(roleBased.lower() == 'y'):
         [7] MySQL
         """)
 
-        role = input("\t[*]Select: ")
+        role = input("\t[*] Select: ")
         # FTP
         if role == '1':
             RULES.extend([
                 "\n# FTP ROLE\n",
                 "iptables -A INPUT -p tcp --dport 21 -j ACCEPT\n"
             ])
+            PORTS.append(21)
         # SSH
         elif role == '2':
             RULES.extend([
                 "\n# SSH ROLE\n",
                 "iptables -A INPUT -p tcp --dport 22 -j ACCEPT\n"
             ])
+            PORTS.append(22)
         # DNS
         elif role == '3':
             RULES.extend([
@@ -212,6 +214,7 @@ if(roleBased.lower() == 'y'):
                 "iptables -A INPUT -p udp --dport 53 --sport 1024:65535 -j ACCEPT\n",
                 "iptables -A INPUT -p tcp --dport 53 --sport 1024:65535 -j ACCEPT\n",
             ])
+            PORTS.append(53)
             # OUTPUT SHOULD BE ALLOWED BY THE EXPLICIT ALLOWING OF ANY ESTABLISHED OR RELATED CONNECTIONS
         # HTTP
         elif role == '4':
@@ -220,20 +223,22 @@ if(roleBased.lower() == 'y'):
                 "iptables -A INPUT -p tcp --dport 80 -j ACCEPT\n",
                 "iptables -A INPUT -p tcp --dport 443 -j ACCEPT\n"
             ])
-
+            PORTS.append(80)
+            PORTS.append(443)
             # ENABLE 8080 FOR HTTP-ALT?
             use8080 = input("\t[*] Allow port 8080 (http-alt) traffic? Y/N: ")
             while(use8080.lower() != 'y' and use8080.lower() != 'n'):
                 use8080 = input("\t[*] Allow port 8080 (http-alt) traffic? Y/N: ")
             if use8080.lower() == 'y':
                 RULES.append("iptables -A INPUT -p tcp --dport 8080 -j ACCEPT\n")
-
+                PORTS.append(8080)
              # ENABLE 8000 FOR HTTP?
             use8000 = input("\t[*] Allow port 8000 traffic? Y/N: ")
             while(use8000.lower() != 'y' and use8000.lower() != 'n'):
                 use8000 = input("\t[*] Allow port 8000 traffic? Y/N: ")
             if use8000.lower() == 'y':
                 RULES.append("iptales -A INPUT -p tcp --dport 8000 -j ACCEPT\n")
+                PORTS.append(8000)
             print("\t[*] INFO: make sure to configure other ports for things like databases manually!")
 
         # MAIL
@@ -246,6 +251,7 @@ if(roleBased.lower() == 'y'):
                 use25 = input("\t[*] Allow SMTP traffic? (recommended) Y/N: ")
             if use25.lower() == 'y':
                 RULES.append("iptables -A INPUT -p tcp --dport 25 -j ACCEPT\n")
+                PORTS.append(25)
 
             # ENABLE POP3?
             use110 = input("\t[*] Allow POP3 traffic? (recommended) Y/N: ")
@@ -253,6 +259,7 @@ if(roleBased.lower() == 'y'):
                 use110 = input("\t[*] Allow POP3 traffic? (recommended) Y/N: ")
             if use110.lower() == 'y':
                 RULES.append("iptables -A INPUT -p tcp --dport 110 -j ACCEPT\n")
+                PORTS.append(110)
 
             # ENABLE POP3S?
             use995 = input("\t[*] Allow POP3S traffic? (recommended) Y/N: ")
@@ -260,6 +267,7 @@ if(roleBased.lower() == 'y'):
                 use995 = input("\t[*] Allow POP3S traffic? (recommended) Y/N: ")
             if use995.lower() == 'y':
                 RULES.append("iptables -A INPUT -p tcp --dport 995 -j ACCEPT\n")
+                PORTS.append(995)
 
             # ENABLE IMAP?
             use143 = input("\t[*] Allow IMAP traffic? (recommended) Y/N: ")
@@ -267,6 +275,7 @@ if(roleBased.lower() == 'y'):
                 use143 = input("\t[*] Allow IMAP traffic? (recommended) Y/N: ")
             if use143.lower() == 'y':
                 RULES.append("iptables -A INPUT -p tcp --dport 143 -j ACCEPT\n")
+                PORTS.append(143)
 
             # ENABLE IMAPS?
             use993 = input("\t[*] Allow IMAPS traffic? (recommended) Y/N: ")
@@ -274,13 +283,15 @@ if(roleBased.lower() == 'y'):
                 use993 = input("\t[*] Allow IMAPS traffic? (recommended) Y/N: ")
             if use993.lower() == 'y':
                 RULES.append("iptables -A INPUT -p tcp --dport 993 -j ACCEPT\n")
-
+                PORTS.append(993)
         # DHCP
         elif role == '6':
             RULES.extend([
                 "\n# DHCP ROLE\n",
                 "iptables -A INPUT -p udp --dport 67:68 -j ACCEPT\n"
             ])
+            PORTS.append(67)
+            PORTS.append(68)
 
         # MySQL
         elif role == '7':
@@ -293,15 +304,18 @@ if(roleBased.lower() == 'y'):
             else:
                 subnet = input("\t[*] Enter host IP or subnet in CIDR notation that needs to connect to this service: ")
                 RULES.append(f'iptables -A INPUT -p tcp --dport 3306 -s {subnet} -j ACCEPT\n')
+            PORTS.append(3306)
 
-        # PROMPT TO CONFIGURE ANOTHE ROLE?
-        configureAnotherRole = input("\t[*]Configure another role for this host? Y/N: ")
+        # PROMPT TO CONFIGURE ANOTHER ROLE?
+        configureAnotherRole = input("\t[*] Configure another role for this host? Y/N: ")
         while(configureAnotherRole.lower() != 'y' and configureAnotherRole.lower() != 'n'):
-            configureAnotherRole = input("\t[*]Configure another role for this host? Y/N: ")
+            configureAnotherRole = input("\t[*] Configure another role for this host? Y/N: ")
         if (configureAnotherRole.lower() == 'y'):
             continue
         else:
             break
+    for rule in RULES:
+        script.write(rule)
 ##########################################################
 # CUSTOM CONFIGURATION
 ##########################################################
