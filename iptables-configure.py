@@ -1,5 +1,5 @@
 import time, os, sys, shutil
-
+import objects
 print("Blackl1ght presents...")
 time.sleep(1.5)
 print(
@@ -128,6 +128,16 @@ if choice.lower() == 'y':
         script.write(f'iptables -A OUTPUT -p tcp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT\n')
         script.write(f'iptables -A INPUT  -p tcp --sport 53 -m state --state ESTABLISHED     -j ACCEPT\n')
 
+# ALLOW OUTBOUND WEB REQUESTS FOR THINGS LIKE PACKAGE MANAGEMENT
+choice = input("[*] Allow outbound HTTP requests? (enhances usability for package management but reduces security) Y/N: ")
+while(choice.lower() != 'y' and choice.lower() != 'n'):
+    choice = input("[*] Allow outbound HTTP requests? (enhances usability for package management but reduces security) Y/N: ")
+
+if choice.lower() == 'y':
+    script.write("\n# ALLOW OUTBOUND HTTP/S REQUESTS FOR PACKAGE MANAGEMENT ETC\n")
+    script.write("# NOTE: ONLY WORKS FOR STANDARD PORTS\n")
+    script.write("iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT\n")
+    script.write("iptables -A OUTPUT -p tcp --dport 443 -j ACCEPT\n")
 ####################################################
 # NON-USER-CONFIGURABLE RULES THAT ARE REQUIRED
 ####################################################
@@ -170,8 +180,10 @@ while(roleBased.lower() != 'y' and roleBased.lower() != 'n'):
     roleBased = input("\n[*] Enter role-based configuration mode? Y/N: ")
 
 if(roleBased.lower() == 'y'):
-    print()
-    # ENTER ROLE-BASED CONFIGURATION
+    configureAnotherRole = True
+
+    while(configureAnotherRole):
+        break
 
 ##########################################################
 # CUSTOM CONFIGURATION
@@ -181,6 +193,12 @@ print("you will be prompted to specify a port, and then select configuration opt
 print("entirely compatible with role-based configuration")
 customConfig = input("\n[*] Enter custom configuration mode? Y/N: ")
 
+while(customConfig.lower() != 'y' and customConfig.lower() != 'n'):
+    customConfig = input("\n[*] Enter custom configuration mode? Y/N: ")
+
+if  customConfig.lower() == 'y':
+    print()
+    # ENTER CUSTOM CONFIGURATION MODE
 #############################################################
 # ALL OPTIONS SHOULD GO BEFORE HERE WHERE THE FILE IS CLOSED
 #############################################################
