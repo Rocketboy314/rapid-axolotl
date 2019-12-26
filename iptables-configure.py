@@ -43,7 +43,7 @@ if not os.geteuid() == 0:
 
 # CREATE THE FILE; WILL OVERWRITE IF IT ALREADY EXISTS
 script = open("rules.sh", "w+")
-script.write("#!bin/bash\n")
+script.write("#!/bin/bash\n")
 
 # FLUSH IPTABLES RULES?
 choice = input("[*] Flush existing IPTables rules? (recommended) Y/N: ")
@@ -237,7 +237,7 @@ if(roleBased.lower() == 'y'):
             while(use8000.lower() != 'y' and use8000.lower() != 'n'):
                 use8000 = input("\t[*] Allow port 8000 traffic? Y/N: ")
             if use8000.lower() == 'y':
-                RULES.append("iptales -A INPUT -p tcp --dport 8000 -j ACCEPT\n")
+                RULES.append("iptables -A INPUT -p tcp --dport 8000 -j ACCEPT\n")
                 PORTS.append(8000)
             print("\t[*] INFO: make sure to configure other ports for things like databases manually!")
 
