@@ -225,6 +225,7 @@ if(roleBased.lower() == 'y'):
             ])
             PORTS.append(80)
             PORTS.append(443)
+
             # ENABLE 8080 FOR HTTP-ALT?
             use8080 = input("\t[*] Allow port 8080 (http-alt) traffic? Y/N: ")
             while(use8080.lower() != 'y' and use8080.lower() != 'n'):
@@ -232,6 +233,7 @@ if(roleBased.lower() == 'y'):
             if use8080.lower() == 'y':
                 RULES.append("iptables -A INPUT -p tcp --dport 8080 -j ACCEPT\n")
                 PORTS.append(8080)
+
              # ENABLE 8000 FOR HTTP?
             use8000 = input("\t[*] Allow port 8000 traffic? Y/N: ")
             while(use8000.lower() != 'y' and use8000.lower() != 'n'):
@@ -239,6 +241,15 @@ if(roleBased.lower() == 'y'):
             if use8000.lower() == 'y':
                 RULES.append("iptables -A INPUT -p tcp --dport 8000 -j ACCEPT\n")
                 PORTS.append(8000)
+
+             # ENABLE 8888 FOR HTTP?
+            use8888 = input("\t[*] Allow port 8888 traffic? Y/N: ")
+            while(use8888.lower() != 'y' and use8888.lower() != 'n'):
+                use8000 = input("\t[*] Allow port 8000 traffic? Y/N: ")
+            if use8888.lower() == 'y':
+                RULES.append("iptables -A INPUT -p tcp --dport 8888 -j ACCEPT\n")
+                PORTS.append(8888)
+                
             print("\t[*] INFO: make sure to configure other ports for things like databases manually!")
 
         # MAIL
@@ -327,9 +338,48 @@ customConfig = input("\n[*] Enter custom configuration mode? Y/N: ")
 while(customConfig.lower() != 'y' and customConfig.lower() != 'n'):
     customConfig = input("\n[*] Enter custom configuration mode? Y/N: ")
 
-if  customConfig.lower() == 'y':
-    print()
-    # ENTER CUSTOM CONFIGURATION MODE
+if customConfig.lower() == 'y':
+    while(True):
+
+        # GET PORT
+        port = input("\n[*] Enter a valid Port Number to configure: ")
+
+        # ENSURE THE PORT IS A DIGIT AND IN THE RANGE OF VALID PORTS
+        if port.isdigit():
+            if int(port) < 0 or int(port) > 65535:
+                continue
+        else:
+            continue
+
+        # GET PROTOCOL
+        protocol = input('\t[*] Protocol? tcp/udp: ')
+        while (protocol != 'tcp' and protocol != 'udp'):
+            protocol = input('\t[*] Protocol? tcp/udp: ')
+
+        # CHECK IF INBOUND TRAFFIC TO THE PORT SHOULD BE ALLOWED
+        allowInbound = ""
+        while (allowInbound.lower() != 'y' and allowInbound.lower() != 'n'):
+            allowInbound = input('\t[*] Allow new inbound traffic TO this port? Y/N: ')
+
+        allowInbound = allowInbound == 'y'
+        shouldLimitInbound = ""
+        inboundLimit = ""
+
+        # IF INBOUND TRAFFIC IS ALLOWED, CHECK IF IT SHOULD BE LIMITED TO A HOST OR SUBNET?
+        if allowInbound:
+            while (shouldLimitInbound.lower() != 'y' and shouldLimitInbound.lower() != 'n'):
+                shouldLimitInbound = input("\t[*] Restrict inbound traffic to this port to a host/subnet? Y/N: ")
+
+            shouldLimitInbound = shouldLimitInbound == 'y'
+
+            if shouldLimitInbound:
+                inboundLimit = input("\t\t[*] Enter host IP address or subnet in CIDR notation to whitelist: ")
+
+        # CHECK IF OUTBOUND TRAFFIC TO PORT
+        allowOutboundTo = ""
+        while (allowOutbound.lower() != 'y' and allowOutbound.lower() != 'n'):
+            allowOutbound = input('\t[*] Allow new outbound traffic TO this port (on another host?')
+
 #############################################################
 # ALL OPTIONS SHOULD GO BEFORE HERE WHERE THE FILE IS CLOSED
 #############################################################
