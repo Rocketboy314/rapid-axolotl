@@ -196,7 +196,7 @@ if(roleBased.lower() == 'y'):
         [8] MySQL
         """)
 
-    role = input("\t\tSelect: ")
+        role = input("\t\tSelect: ")
 
 
 ##########################################################
