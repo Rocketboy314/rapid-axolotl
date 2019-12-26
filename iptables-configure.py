@@ -154,7 +154,7 @@ script.write("iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT\
 ########################################################
 # CONFIGURE PORTSPOOF
 ########################################################
-portspoof = input("\n[*] Install and auto-configure PortSpoof utility? Y/N: ")
+portspoof = input("[*] Install and auto-configure PortSpoof utility? Y/N: ")
 
 # IF USER DESIRES, INSTALL AND CONFIGURE PORTSPOOF. THIS WILL REQUIRE BUFFERING ALL OUTPUT, TRACKING ALL PORTS MODDED,
 # AND THEN APPENDING PORTSPOOF LINES AND THEN NORMAL PORT LINES
@@ -164,7 +164,7 @@ PORTS = []
 #########################################################
 # INSTALL FAIL2BAN
 #########################################################
-fail2ban = input("\n[*] Install and configure fail2ban? Y/N: ")
+fail2ban = input("[*] Install and configure fail2ban? Y/N: ")
 
 # IF USER DESIRES, INSTALL FAIL2BAN
 
@@ -184,6 +184,7 @@ if(roleBased.lower() == 'y'):
     configureAnotherRole = True
 
     while(configureAnotherRole):
+        print("Select role:\n")
         print("""
         [1] FTP
         [2] SSH
@@ -194,6 +195,8 @@ if(roleBased.lower() == 'y'):
         [7] DHCP
         [8] MySQL
         """)
+
+    role = input("\t\tSelect: ")
 
 
 ##########################################################
