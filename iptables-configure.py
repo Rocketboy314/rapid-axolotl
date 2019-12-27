@@ -428,6 +428,34 @@ if customConfig.lower() == 'y':
             continue
         else:
             break
+###################################################################################
+# ACTUALLY DO THE PORTSPOOF INSTALL NOW THAT WE HAVE ALL THE PORTS TO WORK AROUND
+###################################################################################
+script.write("\n# PORTSPOOF CONFIG\n")
+# INSTALL PORTSPOOF
+
+# DETERMINE RANGES TO SPOOF
+spoofPorts = ""
+if (len(PORTS) >= 14):
+    # WILL HAVE TO OVERLAP SOME RANGES
+    start = 1
+    
+else:
+    # CAN DO NORMAL CONFIG
+    start = 1
+    for port in PORTS:
+        spoofPorts += f'{start}:{int(port) - 1} '
+        start = int(port) + 1
+    spoofPorts += f'{start}:65535'
+    script.write(f'spoofPorts="{spoofPorts}"\n')
+    script.write("for prange in ${spoofPorts}; do\n")
+    script.write("\tiptables -t nat -A PREROUTING -p tcp -m tcp --dport ${prange} -j REDIRECT --to-ports 4444\n")
+    script.write("done\n")
+    script.write("iptables -A INPUT -p tcp --dport 4444 -j ACCEPT\n")
+    script.write("iptables -A OUTPUT -p tcp --sport 4444 -j ACCEPT\n")
+
+
+
 #############################################################
 # ALL OPTIONS SHOULD GO BEFORE HERE WHERE THE FILE IS CLOSED
 #############################################################
