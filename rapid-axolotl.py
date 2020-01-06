@@ -154,7 +154,20 @@ script.write("iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT\
 ########################################################
 # CONFIGURE PORTSPOOF
 ########################################################
-portspoof = input("[*] Install and auto-configure PortSpoof utility? Y/N: ")
+portspoof = ""
+while portspoof.lower() != 'y' and portspoof.lower() != 'n':
+    portspoof = input("[*] Install and auto-configure PortSpoof utility? Y/N: ")
+
+if portspoof.lower() == 'y':
+    print("\n[*] Attempting to install portspoof:\n\n")
+    os.chdir('./portspoof')
+    print("\n[*] Running 'sh configure'")
+    os.system('sh configure')
+    print("\n[*] Running 'make'")
+    os.system('make')
+    print("\n[*] Running 'make install'")
+    os.system('make install')
+    print('\n')
 
 # IF USER DESIRES, INSTALL AND CONFIGURE PORTSPOOF. THIS WILL REQUIRE BUFFERING ALL OUTPUT, TRACKING ALL PORTS MODDED,
 # AND THEN APPENDING PORTSPOOF LINES AND THEN NORMAL PORT LINES
