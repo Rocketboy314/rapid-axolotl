@@ -435,6 +435,10 @@ if customConfig.lower() == 'y':
 script.write("\n# PORTSPOOF CONFIG\n")
 # INSTALL PORTSPOOF
 
+
+# SORT PORTS LIST
+PORTS = PORTS.sort(reverse=False)
+
 # DETERMINE RANGES TO SPOOF
 portsToSpoof = ""
 if (len(PORTS) >= 14):
@@ -445,7 +449,7 @@ if (len(PORTS) >= 14):
         portsToSpoof += f'{start}:{int(PORTS[i] - 1)} '
         start = int(PORTS[i]) + 1
         i += 1
-    portsToSpoof += f'{PORTS[-1]}:65535'
+    portsToSpoof += f'{max(PORTS)}:65535'
 
 else:
     # CAN DO NORMAL CONFIG
