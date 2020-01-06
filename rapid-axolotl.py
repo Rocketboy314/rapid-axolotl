@@ -111,9 +111,9 @@ while(choice.lower() != 'y' and choice.lower != 'n'):
 if choice.lower() == 'y':
     script.write("\n# ALLOW DNS RESOLUTION\n")
 
-    choice2 = input("\t[*] Are you going to specify a DNS serve IP Address? Y/N: ")
+    choice2 = input("\t[*] Are you going to specify a DNS server IP Address? Y/N: ")
     while(choice2.lower() != 'y' and choice2.lower() != 'n'):
-        choice2 = input("\t[*] Are you going to specify a DNS serve IP Address? (recommended, if possible) Y/N: ")
+        choice2 = input("\t[*] Are you going to specify a DNS server IP Address? Y/N: ")
 
     if choice2 == 'y':  # WITH A SPECIFIED IP ADDRESS
         ip = input("\t[*] Enter DNS server IP Address: ")
@@ -442,7 +442,7 @@ if (len(PORTS) >= 14):
     start = 1
     i = 0
     while i < 14:
-        portsToSpoof += f'{start}:{int(PORTS[i] - 1)}'
+        portsToSpoof += f'{start}:{int(PORTS[i] - 1)} '
         start = int(PORTS[i]) + 1
         i += 1
     portsToSpoof += f'{PORTS[-1]}:65535'
