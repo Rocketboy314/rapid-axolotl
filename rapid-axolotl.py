@@ -172,7 +172,10 @@ if portspoof.lower() == 'y':
     os.system('make install')
     print('\n')
 
-    print("[*] Portspoof Installation Complete")
+    print("[*] PortSpoof Installation Complete")
+
+    script.write("\nportspoof -D -c ./portspoof/tools/postspoof.conf -s ./portspoof/tools/portspoof_signatures\n")
+    print("[*] Added PortSpoof startup to rules.sh")
 
 # IF USER DESIRES, INSTALL AND CONFIGURE PORTSPOOF. THIS WILL REQUIRE BUFFERING ALL OUTPUT, TRACKING ALL PORTS MODDED,
 # AND THEN APPENDING PORTSPOOF LINES AND THEN NORMAL PORT LINES
