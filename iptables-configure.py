@@ -444,6 +444,7 @@ if (len(PORTS) >= 14):
     while i < 14:
         portsToSpoof += f'{start}:{int(PORTS[i] - 1)}'
         start = int(PORTS[i]) + 1
+        i += 1
     portsToSpoof += f'{PORTS[-1]}:65535'
 
 else:
