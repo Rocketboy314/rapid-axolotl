@@ -428,6 +428,7 @@ if customConfig.lower() == 'y':
             continue
         else:
             break
+
 ###################################################################################
 # ACTUALLY DO THE PORTSPOOF INSTALL NOW THAT WE HAVE ALL THE PORTS TO WORK AROUND
 ###################################################################################
@@ -435,26 +436,39 @@ script.write("\n# PORTSPOOF CONFIG\n")
 # INSTALL PORTSPOOF
 
 # DETERMINE RANGES TO SPOOF
-spoofPorts = ""
+portsToSpoof = ""
 if (len(PORTS) >= 14):
     # WILL HAVE TO OVERLAP SOME RANGES
     start = 1
-    
+    i = 0
+    while i < 14:
+        portsToSpoof += f'{start}:{int(PORTS[i] - 1)}'
+        start = int(PORTS[i]) + 1
+    portsToSpoof += f'{PORTS[-1]}:65535'
+
 else:
     # CAN DO NORMAL CONFIG
     start = 1
     for port in PORTS:
-        spoofPorts += f'{start}:{int(port) - 1} '
+        portsToSpoof += f'{start}:{int(port) - 1} '
         start = int(port) + 1
-    spoofPorts += f'{start}:65535'
-    script.write(f'spoofPorts="{spoofPorts}"\n')
-    script.write("for prange in ${spoofPorts}; do\n")
-    script.write("\tiptables -t nat -A PREROUTING -p tcp -m tcp --dport ${prange} -j REDIRECT --to-ports 4444\n")
-    script.write("done\n")
-    script.write("iptables -A INPUT -p tcp --dport 4444 -j ACCEPT\n")
-    script.write("iptables -A OUTPUT -p tcp --sport 4444 -j ACCEPT\n")
+    portsToSpoof += f'{start}:65535'
 
+print("[*] DEBUG: portspoof ports: " + portsToSpoof)
+script.write(f'spoofPorts="{portsToSpoof}"\n')
+script.write("for prange in ${spoofPorts}; do\n")
+script.write("\tiptables -t nat -A PREROUTING -p tcp -m tcp --dport ${prange} -j REDIRECT --to-ports 4444\n")
+script.write("done\n")
+script.write("iptables -A INPUT -p tcp --dport 4444 -j ACCEPT\n")
+script.write("iptables -A OUTPUT -p tcp --sport 4444 -j ACCEPT\n")
 
+############################################################
+# WRITE OUT ALL THE RULES WE CONFIGURED TO THE SCRIPT NOW
+############################################################
+script.write('\n')
+
+for rule in RULES:
+    script.write(rule)
 
 #############################################################
 # ALL OPTIONS SHOULD GO BEFORE HERE WHERE THE FILE IS CLOSED
@@ -468,3 +482,23 @@ os.system("chown root:root rules.sh")
 
 # ENSURE ONLY ROOT CAN RUN THE SCRIPT
 os.system("chmod 770 rules.sh")
+
+##############################################################
+# OFFER TO RUN SCRIPT
+##############################################################
+print("\n[*] script generation complete, can be found at " + os.curdir + '/rules.sh')
+run = input('[*] Would you like to run the script? Y/N: ')
+while run.lower() != 'n' and run.lower() != 'y':
+    run = input('[*] Would you like to run the script? Y/N: ')
+
+if run.lower() == 'y':
+    os.system('sh rules.sh')
+    print("[*] Executed rules.sh")
+
+    persist = ""
+    print("\n[*] INFO: Enabling rule persistence will prevent rules from being cleared on system restart")
+    while persist.lower() != 'y' and persist.lower() != 'n':
+        persist = input("[*] Would you like to enable rule persistence? Y/N: ")
+    if persist.lower() == 'y':
+        os.system('iptables-save')
+
