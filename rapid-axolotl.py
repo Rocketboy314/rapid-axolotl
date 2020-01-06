@@ -185,7 +185,7 @@ PORTS = []
 #########################################################
 # INSTALL FAIL2BAN
 #########################################################
-fail2ban = input("[*] Install and configure fail2ban? Y/N: ")
+#fail2ban = input("[*] Install and configure fail2ban? Y/N: ")
 
 # IF USER DESIRES, INSTALL FAIL2BAN
 
