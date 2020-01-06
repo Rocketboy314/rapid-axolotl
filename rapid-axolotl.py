@@ -159,15 +159,20 @@ while portspoof.lower() != 'y' and portspoof.lower() != 'n':
     portspoof = input("[*] Install and auto-configure PortSpoof utility? Y/N: ")
 
 if portspoof.lower() == 'y':
-    print("\n[*] Attempting to install portspoof:\n\n")
+    print("\n[*] Attempting to install portspoof:")
     os.chdir('./portspoof')
     print("\n[*] Running 'sh configure'")
+    print("====================================================")
     os.system('sh configure')
     print("\n[*] Running 'make'")
+    print("====================================================")
     os.system('make')
     print("\n[*] Running 'make install'")
+    print("====================================================")
     os.system('make install')
     print('\n')
+
+    print("[*] Portspoof Installation Complete")
 
 # IF USER DESIRES, INSTALL AND CONFIGURE PORTSPOOF. THIS WILL REQUIRE BUFFERING ALL OUTPUT, TRACKING ALL PORTS MODDED,
 # AND THEN APPENDING PORTSPOOF LINES AND THEN NORMAL PORT LINES
@@ -450,7 +455,7 @@ script.write("\n# PORTSPOOF CONFIG\n")
 
 
 # SORT PORTS LIST
-PORTS = PORTS.sort(reverse=False)
+PORTS.sort(reverse=False)
 
 # DETERMINE RANGES TO SPOOF
 portsToSpoof = ""
