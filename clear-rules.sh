@@ -16,3 +16,7 @@ echo reseting default policies for input, output, and forward chains!
 iptables -P INPUT ACCEPT
 iptables -P OUTPUT ACCEPT
 iptables -P FORWARD ACCEPT
+
+echo attempting to kill portspoof, if running!
+
+killall portspoof
