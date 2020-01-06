@@ -458,6 +458,8 @@ script.write("\n# PORTSPOOF CONFIG\n")
 
 
 # SORT PORTS LIST
+INT_PORTS = [int(x) for x in PORTS]
+PORTS = INT_PORTS
 PORTS.sort(reverse=False)
 
 # DETERMINE RANGES TO SPOOF
