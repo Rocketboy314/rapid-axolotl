@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import time, os, sys, shutil
 print("Blackl1ght presents...")
 time.sleep(1.5)
