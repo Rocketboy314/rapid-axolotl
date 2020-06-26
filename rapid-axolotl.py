@@ -162,7 +162,7 @@ while portspoof.lower() != 'y' and portspoof.lower() != 'n':
 
 if portspoof.lower() == 'y':
     print("\n[*] Attempting to install portspoof:")
-    os.chdir('./portspoof')
+    os.chdir('./portspoof') # enter portspoof config directory
     print("\n[*] Running 'sh configure'")
     print("====================================================")
     os.system('sh configure')
@@ -176,9 +176,9 @@ if portspoof.lower() == 'y':
 
     print("[*] PortSpoof Installation Complete")
 
-    script.write("\nportspoof -D -c ./portspoof/tools/postspoof.conf -s ./portspoof/tools/portspoof_signatures\n")
+    script.write("\nportspoof -D -c ./portspoof/tools/portspoof.conf -s ./portspoof/tools/portspoof_signatures\n")
     print("[*] Added PortSpoof startup to rules.sh")
-    os.chdir('../')
+    os.chdir('../') # exit portspoof config directory
 
 # IF USER DESIRES, INSTALL AND CONFIGURE PORTSPOOF. THIS WILL REQUIRE BUFFERING ALL OUTPUT, TRACKING ALL PORTS MODDED,
 # AND THEN APPENDING PORTSPOOF LINES AND THEN NORMAL PORT LINES
