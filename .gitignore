@@ -133,3 +133,6 @@ dmypy.json
 
 # RULE FILES
 rules.sh
+
+# PORTSPOOF CONF
+portspoof/
