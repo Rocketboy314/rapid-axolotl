@@ -43,7 +43,7 @@ if not os.geteuid() == 0:
     sys.exit("\nPlease run this script with SUDO or as root.\n")
 
 # CREATE THE FILE; WILL OVERWRITE IF IT ALREADY EXISTS
-script = open("rules.sh", "w+")
+script = open("./rules.sh", "w+")
 script.write("#!/bin/bash\n")
 
 # FLUSH IPTABLES RULES?
@@ -61,6 +61,7 @@ if (choice.lower() == 'y'):
     script.write("iptables -t mangle -X\n")
     script.write("\n")
 
+# TODO: ENSURE ALL FILEPATHS ARE CORRECT
 ##############################################
 # SET DEFAULT POLICIES
 ##############################################
@@ -177,6 +178,7 @@ if portspoof.lower() == 'y':
 
     script.write("\nportspoof -D -c ./portspoof/tools/postspoof.conf -s ./portspoof/tools/portspoof_signatures\n")
     print("[*] Added PortSpoof startup to rules.sh")
+    os.chdir('../')
 
 # IF USER DESIRES, INSTALL AND CONFIGURE PORTSPOOF. THIS WILL REQUIRE BUFFERING ALL OUTPUT, TRACKING ALL PORTS MODDED,
 # AND THEN APPENDING PORTSPOOF LINES AND THEN NORMAL PORT LINES
